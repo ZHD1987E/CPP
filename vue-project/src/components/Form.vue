@@ -11,6 +11,7 @@ const coinName = ref('');
 const coinTicker = ref('');
 const buyPrice = ref(0);
 const buyQuantity = ref(0);
+const emits = defineEmits(['added'])
 
 async function submitForm() {
     // this is included to check the ticker if it resides in the Binance exchange.
@@ -23,7 +24,10 @@ async function submitForm() {
     }
     console.log(data)
     const docref = doc(db, "Crypto", coinName.value)
-    setDoc(docref, data).then(() => location.reload())
+    setDoc(docref, data).then(() => {
+        document.getElementById("form").reset()
+        emits('added')
+    })
     }).catch(() => {
         alert("Did you type in the correct ticker?")
     })
@@ -33,7 +37,7 @@ async function submitForm() {
 
 <template>
     <Banner msg="Add coins"></Banner>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" id="form">
         <input type="text" v-model="coinName" placeholder="Coin Name" required><br>
         <input type="text" v-model="coinTicker" placeholder="Coin Ticker" required><br>
         <input type="number" v-model.number="buyPrice" placeholder="Buy price" required min=0><br>
