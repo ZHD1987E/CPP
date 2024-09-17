@@ -33,7 +33,7 @@ async function submitForm() {
 
 <template>
     <Banner msg="Add coins"></Banner>
-    <form @submit.prevent="submitForm">
+    <form @submit="submitForm">
         <input type="text" v-model="coinName" placeholder="Coin Name" required><br>
         <input type="text" v-model="coinTicker" placeholder="Coin Ticker" required><br>
         <input type="number" v-model.number="buyPrice" placeholder="Buy price" required min=0><br>
