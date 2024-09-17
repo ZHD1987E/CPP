@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from "vue"
-import { app, db } from "../firebase.js"
+import { db } from "../firebase.js"
 import { doc, setDoc } from "firebase/firestore"
 import Banner from "./Banner.vue"
+import { binance } from "ccxt"
 
 
 
@@ -12,7 +13,9 @@ const buyPrice = ref(0);
 const buyQuantity = ref(0);
 
 async function submitForm() {
-    const data = {
+    // this is included to check the ticker if it resides in the Binance exchange.
+    new binance().fetchTicker(coinTicker.value).then(() => {
+        const data = {
         Name: coinName.value,
         Ticker: coinTicker.value,
         Buy_Price: buyPrice.value,
@@ -20,8 +23,11 @@ async function submitForm() {
     }
     console.log(data)
     const docref = doc(db, "Crypto", coinName.value)
-    await setDoc(docref, data)
-    location.reload()
+    setDoc(docref, data).then(() => location.reload())
+    }).catch(() => {
+        alert("Did you type in the correct ticker?")
+    })
+
 }
 </script>
 
@@ -30,8 +36,8 @@ async function submitForm() {
     <form @submit.prevent="submitForm">
         <input type="text" v-model="coinName" placeholder="Coin Name" required><br>
         <input type="text" v-model="coinTicker" placeholder="Coin Ticker" required><br>
-        <input type="number" v-model.number="buyPrice" placeholder="Buy price" required><br>
-        <input type="number" v-model.number="buyQuantity" placeholder="Buy quantity" required><br>
+        <input type="number" v-model.number="buyPrice" placeholder="Buy price" required min=0><br>
+        <input type="number" v-model.number="buyQuantity" placeholder="Buy quantity" required min=0><br>
         <input type="submit">
     </form>
 </template>
