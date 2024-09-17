@@ -7,10 +7,10 @@ import { exchange } from "../binance.js"
 
 
 
-const coinName = ref('');
-const coinTicker = ref('');
-const buyPrice = ref(0);
-const buyQuantity = ref(0);
+const coinName = ref();
+const coinTicker = ref();
+const buyPrice = ref();
+const buyQuantity = ref();
 const emits = defineEmits(['added'])
 
 async function submitForm() {
@@ -26,6 +26,10 @@ async function submitForm() {
     const docref = doc(db, "Crypto", coinName.value)
     setDoc(docref, data).then(() => {
         document.getElementById("form").reset()
+        coinName.value = ""
+        coinTicker.value = ""
+        buyPrice.value = ""
+        buyQuantity.value = ""
         emits('added')
     })
     }).catch(() => {
