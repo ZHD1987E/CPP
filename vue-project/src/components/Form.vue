@@ -3,7 +3,7 @@ import { ref } from "vue"
 import { db } from "../firebase.js"
 import { doc, setDoc } from "firebase/firestore"
 import Banner from "./Banner.vue"
-import { binance } from "ccxt"
+import { exchange } from "../binance.js"
 
 
 
@@ -14,7 +14,7 @@ const buyQuantity = ref(0);
 
 async function submitForm() {
     // this is included to check the ticker if it resides in the Binance exchange.
-    new binance().fetchTicker(coinTicker.value).then(() => {
+    exchange.fetchTicker(coinTicker.value).then(() => {
         const data = {
         Name: coinName.value,
         Ticker: coinTicker.value,

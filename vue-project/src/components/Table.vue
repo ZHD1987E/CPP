@@ -4,7 +4,7 @@
 import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
 import Banner from "./Banner.vue";
 import { db } from "../firebase.js";
-import { binance } from "ccxt"
+import { exchange } from "../binance"
 
 
 async function awaitData() {
@@ -19,7 +19,6 @@ async function deleteEntry(entry) {
 }
 
 async function getRate(Ticker) {
-    const exchange = new binance();
     const received = await exchange.fetchOHLCV(Ticker, "5m")
     return received[499][4]
 }
