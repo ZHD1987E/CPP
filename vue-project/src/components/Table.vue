@@ -44,7 +44,7 @@ await display();
 <template>
     <Banner msg="Profits"></Banner>
     <table id="tb">
-        <tbody>
+        <thead>
             <tr>
                 <th>Serial</th>
                 <th>Coin Name</th>
@@ -55,6 +55,8 @@ await display();
                 <th>Profit</th>
                 <th>Delete?</th>
             </tr>
+        </thead>
+        <tbody>
             <tr v-for="entry in entries" :key="entry.Ticker">
                 <td>{{ entry.Index }}</td>
                 <td>{{ entry.Name }}</td>
