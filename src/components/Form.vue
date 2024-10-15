@@ -20,7 +20,7 @@ let userName = ref("");
 onMounted(() => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            userName.value = user.uid; // Update userName when authenticated
+            userName.value = user.email; // Update userName when authenticated
         } else {
             console.error("No user is signed in.");
             // Handle the case where the user is not logged in

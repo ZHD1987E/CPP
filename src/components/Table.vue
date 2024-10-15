@@ -15,7 +15,7 @@ const userId = ref("");
 onMounted(() => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            userId.value = user.uid; // Use user UID
+            userId.value = user.email; // Use user UID
             display(); // Call display() after user is authenticated
         } else {
             console.error("No user is signed in.");
@@ -49,7 +49,6 @@ async function display() {
 
     entries.value = data;
     ProfitMessage.value = `Total Profits: $${totalProfits.value}`;
-    console.log(e)
 }
 </script>
 
