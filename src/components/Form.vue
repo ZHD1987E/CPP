@@ -4,6 +4,8 @@ import { db } from "../firebase.js"
 import { doc, setDoc } from "firebase/firestore"
 import Banner from "./Banner.vue"
 import { exchange } from "../binance.js"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import {onMounted} from "vue"
 
 
 
@@ -12,6 +14,19 @@ const coinTicker = ref();
 const buyPrice = ref();
 const buyQuantity = ref();
 const emits = defineEmits(['added'])
+const auth = getAuth();
+let userName = ref("");
+
+onMounted(() => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            userName.value = user.uid; // Update userName when authenticated
+        } else {
+            console.error("No user is signed in.");
+            // Handle the case where the user is not logged in
+        }
+    });
+});
 
 async function submitForm() {
     // this is included to check the ticker if it resides in the Binance exchange.
@@ -23,7 +38,7 @@ async function submitForm() {
         Buy_Quantity: buyQuantity.value
     }
     console.log(data)
-    const docref = doc(db, "Crypto", coinName.value)
+    const docref = doc(db, userName.value, coinName.value)
     setDoc(docref, data).then(() => {
         document.getElementById("form").reset()
         coinName.value = ""
@@ -32,8 +47,9 @@ async function submitForm() {
         buyQuantity.value = ""
         emits('added')
     })
-    }).catch(() => {
+    }).catch((error) => {
         alert("Did you type in the correct ticker?")
+        alert(error.message)
     })
 
 }

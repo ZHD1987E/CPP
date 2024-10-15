@@ -1,24 +1,38 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
 import Banner from "./Banner.vue";
 import { db } from "../firebase.js";
 import { exchange } from "../binance";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const entries = ref([]);
-let totalProfits = ref(0);
-let ProfitMessage = ref('')
+const totalProfits = ref(0);
+const ProfitMessage = ref('');
+const auth = getAuth();
+const userId = ref("");
+
+onMounted(() => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            userId.value = user.uid; // Use user UID
+            display(); // Call display() after user is authenticated
+        } else {
+            console.error("No user is signed in.");
+        }
+    });
+});
 
 async function deleteEntry(entry) {
-    const docToDelete = doc(db, "Crypto", entry);
+    const docToDelete = doc(db, userId.value, entry); // Adjust path based on Firestore structure
     await deleteDoc(docToDelete);
-    totalProfits.value = 0;
-    await display();
+    await display(); // Refresh display after deletion
 }
 
 async function display() {
-    let snapshot = await getDocs(collection(db, "Crypto"));
-    let data = snapshot.docs.map((doc) => doc.data());
+    totalProfits.value = 0; // Reset total profits on each display
+    const snapshot = await getDocs(collection(db, userId.value)); // Adjust path to fetch the coins collection
+    const data = snapshot.docs.map((doc) => doc.data()); // Include doc.id if needed for deletion
     let index = 1;
 
     await Promise.all(data.map(async (entry) => {
@@ -28,17 +42,15 @@ async function display() {
         } catch {
             entry.Current_Price = 0;
         }
-        entry.Profit = Math.round(entry.Buy_Quantity * (entry.Current_Price - entry.Buy_Price),2);
+        entry.Profit = Math.round(entry.Buy_Quantity * (entry.Current_Price - entry.Buy_Price), 2);
         totalProfits.value += entry.Profit;
         entry.Index = index++;
     }));
 
     entries.value = data;
-    ProfitMessage.value = `Total Profits: $ ${totalProfits.value}`;
+    ProfitMessage.value = `Total Profits: $${totalProfits.value}`;
+    console.log(e)
 }
-
-await display();
-
 </script>
 
 <template>

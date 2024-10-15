@@ -11,6 +11,7 @@
   "dependencies": {
     "ccxt": "^4.4.3",
     "firebase": "^10.13.1",
+    "firebaseui": "^0.600.0",
     "http-proxy-agent": "^7.0.2",
     "https-proxy-agent": "^7.0.5",
     "socks-proxy-agent": "^8.0.4",

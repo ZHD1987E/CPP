@@ -2,12 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue"
 import About from "@/views/About.vue"
 import OnlyProfits from "@/views/OnlyProfits.vue";
-import TestLogin from "@/views/TestLogin.vue";
+import LogInPage from "@/views/LogInPage.vue";
+import NotFound from "@/views/NotFound.vue";
+import Profile from "@/views/Profile.vue";
 
 const routes = [
     {
         path: "/",
-        component: Home
+        component: LogInPage
     },
     {
         path: "/about",
@@ -18,8 +20,16 @@ const routes = [
         component: OnlyProfits
     },
     {
-        path: "/testlogin",
-        component: TestLogin
+        path: "/home",
+        component: Home
+    },
+    {
+        path: "/profile",
+        component: Profile
+    },
+    {
+        path: "/:catchAll(.*)",
+        component: NotFound
     }
 ]
 
